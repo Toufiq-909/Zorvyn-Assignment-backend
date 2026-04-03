@@ -1,16 +1,12 @@
 import Express from "express";
-import sql from "./db.js"
 import Authrouter from "./API/Routes/Auth/Auth.js"
+import userRouter from "./API/Routes/UserMangament/User.js";
   const app=Express();
   app.use(Express.json());
  
   app.use("/auth",Authrouter);
-  app.get("/",async (req,res)=>{
-    const [result]=await sql `select * from users`;
-    console.log(result);
-    res.json(result);
+  app.use("/user",userRouter)
 
-  })
   export default app;
 
 
