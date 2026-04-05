@@ -3,19 +3,24 @@ import nodemailer from "nodemailer"
 import crypto from "crypto"
 import bcrypt from "bcrypt"
 import {  generateUsername } from "unique-username-generator";
+import z from "zod"
 import dotenv from "dotenv"
-
 dotenv.config();
 export async function  createUser(req,res)
 {
-    
+    const validuser=z.object({email:z.email(),creatorRole:z.literal("admin"),role:z.enum(["viewer","analyst","admin"])})
+    const check=validuser.safeParse({email:req.body.email,creatorRole:req.body.creatorRole,
+      role:req.body.role
+    })
+    if(!check.success)
+    {
+      console.log(check.error);
+      return res.status(422).json({error:check.error});
+    }
     const username=generateUsername("_",4);
     const password=crypto.randomBytes(4).toString("hex");
     const hashedpassword=await bcrypt.hash(password,4);
-    if(req.body.creatorRole!="admin" || req.body.role!="viewer" && req.body.role!=admin && req.body.role!='analyst')
-    {
-        res.status(422).send("Invalid role")
-    }
+   
     try
     {
         const [result]=await sql `insert into users (username,password,role,"Active","generatedPassword") values (${username},${hashedpassword},${req.body.role},true,true)`;
@@ -37,7 +42,7 @@ export async function  createUser(req,res)
   service: 'gmail',
   auth: {
     user: 'findvolunteer@gmail.com',
-    pass: 'ehmm zcqp jbuk qtuo'
+    pass: process.env.pass
   }
 });
 
