@@ -12,7 +12,7 @@ export async function  createUser(req,res)
     const username=generateUsername("_",4);
     const password=crypto.randomBytes(4).toString("hex");
     const hashedpassword=await bcrypt.hash(password,4);
-    if(req.body.role!="viewer" && req.body.role!=admin && req.body.role!='analyst')
+    if(req.body.creatorRole!="admin" || req.body.role!="viewer" && req.body.role!=admin && req.body.role!='analyst')
     {
         res.status(422).send("Invalid role")
     }
