@@ -45,4 +45,3 @@ const [result]=await sql `select password,"generatedPassword" from users where u
 
 
 }
-//try catch
