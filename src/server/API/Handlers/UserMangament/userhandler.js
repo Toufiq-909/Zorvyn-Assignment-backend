@@ -8,8 +8,8 @@ import dotenv from "dotenv"
 dotenv.config();
 export async function  createUser(req,res)
 {
-    const validuser=z.object({email:z.email(),creatorRole:z.literal("admin"),role:z.enum(["viewer","analyst","admin"])})
-    const check=validuser.safeParse({email:req.body.email,creatorRole:req.body.creatorRole,
+    const validuser=z.object({email:z.email(),role:z.enum(["viewer","analyst","admin"])})
+    const check=validuser.safeParse({email:req.body.email,
       role:req.body.role
     })
     if(!check.success)

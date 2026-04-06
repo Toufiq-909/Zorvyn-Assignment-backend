@@ -1,18 +1,34 @@
 import Express from "express"
 import { createRecord,deleteRecord ,getRecord,updateRecord} from "../../Handlers/Record/recordhanlder.js";
+import jwt from "jsonwebtoken"
+import dotenv from "dotenv"
+dotenv.config()
 const RecordRouter=Express.Router();
 RecordRouter.get("/",getRecord)
 RecordRouter.use((req,res,next)=>
-
 {
-    if(req.body.role==="admin")
+   
+    
+    try
     {
-        next();
+        const decodedtoken=jwt.verify(req.headers.token,process.env.Secret);
+        if(decodedtoken.role=="admin")
+        {
+            next();
+        }
+        else
+        {
+         return  res.status(403).send("Unauthorized");
+        }
+
     }
-    else
+    catch(e)
     {
+        console.log(e);
         res.status(403).send("Unauthorized");
     }
+     
+   
 })
 RecordRouter.post("/create",createRecord);
 RecordRouter.post("/delete",deleteRecord)

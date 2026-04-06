@@ -17,7 +17,7 @@ export async function login(req,res)
     
     try
     {
-        const [result]=await sql `select password,"generatedPassword" from users where username=${req.body.name}`
+        const [result]=await sql `select role,password,"generatedPassword" from users where username=${req.body.name}`
  
     if(result!=null)
     {
@@ -27,7 +27,8 @@ export async function login(req,res)
            {
              return res.status(422).send("Change the password")
            }
-        let token=jwt.sign({username:req.body.username},process.env.Secret);
+           
+        let token=jwt.sign({username:req.body.name,role:result.role},process.env.Secret);
         return res.status(200).json({token:token})
     } 
     }

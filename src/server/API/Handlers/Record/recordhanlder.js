@@ -1,5 +1,8 @@
 import z from "zod"
 import sql from "../../../db.js";
+import jwt from "jsonwebtoken"
+import dotenv from "dotenv"
+dotenv.config();
 export async function createRecord(req,res)
 {
     const validrequest=z.object({
@@ -63,6 +66,13 @@ export async function deleteRecord(req,res)
 
 export async function getRecord(req,res)
 {
+   console.log(req.headers.token);
+     const decodedtoken=jwt.verify(req.headers.token,process.env.Secret);
+            if(decodedtoken.role!="admin" && decodedtoken.role!="analyst")
+            {
+                return res.status(403).send("Unauthorized");
+            }
+            
     
     const validrequest=z.array(z.union([z.literal("page"),z.enum(["amount","date","type","category","notes"])]))
     const check=validrequest.safeParse(Object.keys(req.query));
@@ -156,12 +166,8 @@ export async function updateRecord(req,res)
           const filtered=Object.fromEntries(Object.entries(check.data).filter(([k,v])=>v!=undefined))
           console.log(filtered);
              let id=parseInt(req.body.id);
-          let count=await sql `update record set ${sql(filtered)} where id=${id} AND deleted=false`
-            if(count==0)
-            {
-                return res.status(422).send("Cannnot perform update operation on deleted field");
-
-            }
+          await sql `update record set ${sql(filtered)} where id=${id} AND deleted=false`
+            
             return res.sendStatus(200);
         }
         catch(e)
