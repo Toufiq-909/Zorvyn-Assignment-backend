@@ -63,3 +63,88 @@ let mailOptions = {
   }
 });
 }
+export async function deleteUser(req,res)
+{
+    const validrequest=z.object({name:z.string().min(4).max(25)})
+    const check=validrequest.safeParse({name:req.body.name})
+    if(!check.success)
+    {
+      return res.sendStatus(422);
+    }
+    try
+    {
+      await sql `update users set "Active"=false where username=${req.body.name}`
+      return res.sendStatus(200);
+    }
+    catch(e)
+    {
+      console.log(e);
+      return res.sendStatus(500);
+    }
+}
+export async function recoverUser(req,res)
+{
+    const validrequest=z.object({name:z.string().min(4).max(25)})
+    const check=validrequest.safeParse({name:req.body.name})
+    if(!check.success)
+    {
+      return res.sendStatus(422);
+    }
+    try
+    {
+      await sql `update users set "Active"=true where username=${req.body.name}`
+      return res.sendStatus(200);
+    }
+    catch(e)
+    {
+      console.log(e);
+      return res.sendStatus(500);
+    }
+}
+export async function getUser(req,res)
+{
+  const validrequest=z.array(z.enum(["Active","id","role","username","generatedPassword"]))
+  const keys=Object.keys(req.query);
+  const check=validrequest.safeParse(keys)
+  if(!check.success)
+  {
+    return res.sendStatus(422);
+  }
+  let condition=[]
+  for(let i=0;i<keys.length;i++)
+  {
+      let key=keys[i];
+      let value=req.query[key];
+      condition.push(sql`${sql(key)}=${value}`)
+  }
+  let whereclause;
+
+   whereclause=condition[0];
+  
+  
+      for(let i=1;i<condition.length;i++)
+{
+  whereclause=sql`${whereclause} AND ${condition[i]}`
+
+}
+
+try
+{
+  if(whereclause!=undefined)
+  {const results=await sql`select * from users where ${whereclause}`
+  return res.status(200).json({results:results})
+
+  }
+  else
+  {
+    const results=await sql`select * from users `
+  return res.status(200).json({results:results})
+  }
+  
+}
+catch(e)
+{
+  console.log(e)
+  return res.sendStatus(500);
+}
+}

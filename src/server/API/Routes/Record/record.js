@@ -1,5 +1,5 @@
 import Express from "express"
-import { createRecord,deleteRecord ,getRecord,updateRecord} from "../../Handlers/Record/recordhanlder.js";
+import { createRecord,deleteRecord ,getRecord,updateRecord,recoverRecord} from "../../Handlers/Record/recordhanlder.js";
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
 dotenv.config()
@@ -33,4 +33,5 @@ RecordRouter.use((req,res,next)=>
 RecordRouter.post("/create",createRecord);
 RecordRouter.post("/delete",deleteRecord)
 RecordRouter.put("/update",updateRecord)
+RecordRouter.put("/recover",recoverRecord)
 export default RecordRouter;

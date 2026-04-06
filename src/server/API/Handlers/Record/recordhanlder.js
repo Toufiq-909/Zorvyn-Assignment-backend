@@ -63,6 +63,27 @@ export async function deleteRecord(req,res)
             return res.sendStatus(500);
         }
 }
+export async function recoverRecord(req,res)
+{
+    const validRequest=z.object({id:z.int().positive()})
+    const check=validRequest.safeParse({id:req.body.id,})
+    if(!check.success)
+        {
+            console.log(check.error);
+            return res.sendStatus(422);
+        }
+        try
+        {
+            await sql `update record set deleted=false where id=${req.body.id}`
+            return res.status(200).send("recover Successfull")
+        }
+        catch(e)
+        {
+            console.log("recover Failed");
+            console.log(e);
+            return res.sendStatus(500);
+        }
+}
 
 export async function getRecord(req,res)
 {

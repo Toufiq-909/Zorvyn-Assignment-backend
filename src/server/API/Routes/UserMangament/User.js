@@ -2,7 +2,7 @@ import Express from "express"
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
 dotenv.config();
-import { createUser } from "../../Handlers/UserMangament/userhandler.js"
+import { createUser,deleteUser,getUser,recoverUser } from "../../Handlers/UserMangament/userhandler.js"
 const userRouter=Express.Router()
 userRouter.use((req,res,next)=>
 {
@@ -30,4 +30,7 @@ userRouter.use((req,res,next)=>
    
 })
 userRouter.post("/create",createUser);
+userRouter.put("/delete",deleteUser);
+userRouter.put("/recover",recoverUser);
+userRouter.get("/",getUser)
 export default userRouter;
