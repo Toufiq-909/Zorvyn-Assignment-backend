@@ -102,8 +102,7 @@ export async function getRecord(req,res)
         console.log(check.error);
       return   res.status(400).send("Invalid field")
     }
-    console.log(check.data);
-    console.log(req.query.page+"asdf")
+  
     const page=parseInt(req.query.page)
    console.log(page);
     if(isNaN(page)||page<=0)

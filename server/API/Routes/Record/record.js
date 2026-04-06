@@ -1,9 +1,12 @@
 import Express from "express"
 import { createRecord,deleteRecord ,getRecord,updateRecord,recoverRecord} from "../../Handlers/Record/recordhanlder.js";
+import { summary,recentActivity } from "../../Handlers/Record/summary.js";
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
 dotenv.config()
 const RecordRouter=Express.Router();
+RecordRouter.get("/summary",summary)
+RecordRouter.get("/recent",recentActivity)
 RecordRouter.get("/",getRecord)
 RecordRouter.use((req,res,next)=>
 {
